@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  zoom: 1; }
+
+.nobr {
+  white-space: nowrap; }
+
+img {
+  height: auto;
+  width: 100%; }
+
+/* IE10 Metro responsive
+ Required for Windows 8 Metro split-screen snapping with IE10
+ Source: http://timkadlec.com/2012/10/ie10-snap-mode-and-responsive-design/ */
+@-ms-viewport {
+  width: device-width; }
+
+/* Scrollbar fixes for IE10 */
+.no-touch {
+  -ms-overflow-style: scrollbar; }
+
+/* This triggers a redraw in IE to Fix IE8's :before content rendering. */
+html:hover [class^="icon-"] {
+  -ms-zoom: 1; }
