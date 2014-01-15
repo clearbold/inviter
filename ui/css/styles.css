@@ -28,3 +28,12 @@ img {
 /* This triggers a redraw in IE to Fix IE8's :before content rendering. */
 html:hover [class^="icon-"] {
   -ms-zoom: 1; }
+
+p {
+  margin-bottom: 1em; }
+
+label {
+  display: block; }
+
+textarea {
+  width: 480px; }

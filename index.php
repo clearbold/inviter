@@ -12,21 +12,48 @@ require_once('app/config/config.php');
     <!-- <!--[endif]-->
 
     <!-- Windows 8 / RT -->
-    <meta http-equiv="cleartype" content="on" />
+    <meta http-equiv="cleartype" content="on" accept-charset="utf-8" />
 
     <link type="text/plain" rel="author" href="Mark J. Reeves / Clearbold" />
     <title>Inviter</title>
 </head>
 <body>
     <div class="wrapper">
-        <form>
+        <form method="POST" action="app/send.php">
+            <p>
+                <label>Sender (Name):</label>
+                <input name="sender_name" type="text" value="<?= $default_sender_name ?>" />
+            </p>
             <p>
                 <label>Sender (Email):</label>
                 <input name="sender" type="email" value="<?= $default_sender ?>" />
             </p>
             <p>
                 <label>Recipient(s) (Email):</label>
-                <textarea name="recipients"></textarea>
+                <textarea name="recipients" rows="4"></textarea>
+            </p>
+            <p>
+                <label>Subject:</label>
+                <input name="subject" type="text" value="" />
+            </p>
+            <p>
+                <label>Date (mm/dd/yyyy):</label>
+                <input name="date" type="text" value="" />
+            </p>
+            <p>
+                <label>Start Time (hh:mm):</label>
+                <input name="start_time" type="text" value="" />
+            </p>
+            <p>
+                <label>End Time (hh:mm):</label>
+                <input name="end_time" type="text" value="" />
+            </p>
+            <p>
+                <label>Message:</label>
+                <textarea name="message" rows="20"></textarea>
+            </p>
+            <p>
+                <input type="submit" name="submit" value="Send" />
             </p>
         </form>
     </div>
