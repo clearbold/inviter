@@ -81,6 +81,7 @@ if ($send_html) {
     $email_html = fread($email_template, filesize("templates/email.html"));
     fclose($email_template);
     $email_html = str_replace("<<message>>", $message_html, $email_html);
+    $email_html = str_replace("<<intro>>", "A meeting invite from $sender_name.", $email_html);
     $email_html = str_replace(chr(174), "&reg;", $email_html); // There will be more of these...
     $email_tmp = fopen("tmp/email.html","w");
     fwrite($email_tmp, $email_html);
@@ -101,17 +102,19 @@ $message = Swift_Message::newInstance()
   ->setTo($email_recipients)
 
   // Give it a body
-  ->setBody($message_email)
+  ->setBody($message_email, 'text/plain')
 
   // And optionally an alternative body
   //->addPart('<q>Here is the message itself</q>', 'text/html')
 
   // Optionally add any attachments
-  ->attach(Swift_Attachment::fromPath('tmp/invite.ics'))
+  //->attach(Swift_Attachment::fromPath('tmp/invite.ics'))
   ;
 
   if ($send_html)
     $message->addPart($email_html, 'text/html');
+
+  $message->attach(Swift_Attachment::fromPath('tmp/invite.ics'));
 
 $transport = Swift_SmtpTransport::newInstance($smtp_server, $smtp_port)
   ->setUsername($smtp_username)
