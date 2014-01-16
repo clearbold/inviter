@@ -30,6 +30,8 @@ for($i=0;$i<strlen($message);$i++){
 // R symbols work in the iCal attachment (tested in Apple's iCal), but \r\n breaks the Description 'field'
 // \n chars on their own work in iCal... Haven't tested Outlook
 $message_ics = str_replace("\r\n", '\n', $message);
+$message_ics = str_replace(chr(174), "(R)", $message_ics); // There will be more of these
+$message_html = nl2br($message);
 
 // Build up the ATTENDEE recipients list in the iCal attachment, and build up the clean array for the email
 $recipients = "";
@@ -78,10 +80,10 @@ if ($send_html) {
     $email_template = fopen("templates/email.html","r");
     $email_html = fread($email_template, filesize("templates/email.html"));
     fclose($email_template);
-    //Do some stuff
+    $email_html = str_replace("<<message>>", $message_html, $email_html);
+    $email_html = str_replace(chr(174), "&reg;", $email_html); // There will be more of these...
     $email_tmp = fopen("tmp/email.html","w");
     fwrite($email_tmp, $email_html);
-    $email_rendered = fread($email_tmp, filesize("templates/email.html"));
     fclose($email_tmp);
 }
 
@@ -107,6 +109,9 @@ $message = Swift_Message::newInstance()
   // Optionally add any attachments
   ->attach(Swift_Attachment::fromPath('tmp/invite.ics'))
   ;
+
+  if ($send_html)
+    $message->addPart($email_html, 'text/html');
 
 $transport = Swift_SmtpTransport::newInstance($smtp_server, $smtp_port)
   ->setUsername($smtp_username)
