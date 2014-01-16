@@ -1,7 +1,7 @@
 inviter
 =======
 
-Inviter is a PHP app that generates emails with iCal (.ics) attachments to send meeting invites. It supports HTML email templates so you can branded emails.
+Inviter is a PHP app that generates emails with iCal (.ics) attachments to send meeting invites. It supports HTML email templates so you can send branded emails.
 
 I built inviter for two reasons:
 
