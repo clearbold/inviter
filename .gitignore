@@ -2,3 +2,4 @@
 
 app/config/config.php
 app/tmp/*.ics
+app/tmp/*.html

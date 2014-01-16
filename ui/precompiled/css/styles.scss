@@ -36,9 +36,13 @@ input, textarea {
     font-size: 16px;
     padding: 10px;
 }
-input[type=text], input[type=email], textarea {
+input[type=text], input[type=email], textarea, iframe {
+    border: 1px solid #333;
     width: 100%;
 }
 input[type=submit] {
     float: right;
+}
+iframe {
+    height: 600px;
 }

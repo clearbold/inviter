@@ -73,6 +73,18 @@ $file = fopen("tmp/invite.ics","w");
 fwrite($file, $ics);
 fclose($file);
 
+// HTML email
+if ($send_html) {
+    $email_template = fopen("templates/email.html","r");
+    $email_html = fread($email_template, filesize("templates/email.html"));
+    fclose($email_template);
+    //Do some stuff
+    $email_tmp = fopen("tmp/email.html","w");
+    fwrite($email_tmp, $email_html);
+    $email_rendered = fread($email_tmp, filesize("templates/email.html"));
+    fclose($email_tmp);
+}
+
 // Here's the email
 // Create the message
 $message = Swift_Message::newInstance()
@@ -138,7 +150,11 @@ Recipients: <? $i=1; foreach ($email_recipients as $recipient) { ?><?= $recipien
 ***
 
 <?= $message_email ?></textarea><br /><br />
-        <textarea rows="40" readonly><?= $ics ?></textarea>
+        <textarea rows="40" readonly><?= $ics ?></textarea><br /><br />
+        <?
+        if ($send_html) { ?>
+        <iframe src="tmp/email.html"></iframe>
+        <? } ?>
     </div>
 </body>
 </html>
