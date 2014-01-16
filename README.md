@@ -1,8 +1,22 @@
 inviter
 =======
 
-Generate email invites without using your own calendar.
+Inviter is a PHP app that generates emails with iCal (.ics) attachments to send meeting invites. It supports HTML email templates so you can branded emails.
 
-I don't have a calendar app hooked up to email, and GoToMeeting doesn't send invites, so I whipped up an app I can run on my localhost to send calendar invites to clients & colleagues.
+I built inviter for two reasons:
 
-Ultimately I'd like to support HTML templates and include some branding components, so that meeting invites sent out carry our message.
+* I don't have a calendar hooked up to my email, so I don't have a way to send invites to others that they can add to their calendars.
+
+* I've been using GoToMeeting for our meetings and it doesn't send out invites to recipients like other apps do. It gives you a message to copy and paste, which is nice, but then recipients don't add those to their calendars.
+
+With inviter, I can paste in the meeting message, set the date and time, enter multiple recipients, and a multipart email is sent with the invite as an attachment.
+
+I'm just running it in my localhost and hitting the site when I need to use it.
+
+### Using inviter
+
+You'll need to make sure that the `app/tmp` directory is writeable. The `app/templates` directory should be readable.
+
+Please do not use the included email.html template with the Clearbold design. Note that there are two variables in that template -- `<<intro>>` and `<<message>>` that get replaced in `send.php`.
+
+You'll need to rename `app/config/example.config.php` to `config.php`.
