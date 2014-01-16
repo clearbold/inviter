@@ -29,7 +29,7 @@ require_once('app/config/config.php');
                 <input name="sender" type="email" value="<?= $default_sender ?>" />
             </p>
             <p>
-                <label>Recipient(s) (Email):</label>
+                <label>Recipient(s) (Email, separated by commas):</label>
                 <textarea name="recipients" rows="4"></textarea>
             </p>
             <p>
@@ -41,11 +41,11 @@ require_once('app/config/config.php');
                 <input name="date" type="text" value="" />
             </p>
             <p>
-                <label>Start Time (hh:mm):</label>
+                <label>Start Time (hh:mmam):</label>
                 <input name="start_time" type="text" value="" />
             </p>
             <p>
-                <label>End Time (hh:mm):</label>
+                <label>End Time (hh:mmam):</label>
                 <input name="end_time" type="text" value="" />
             </p>
             <p>

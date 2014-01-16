@@ -3,36 +3,35 @@
 require_once('config/config.php');
 require_once('swiftmailer/lib/swift_required.php');
 
-echo "To: " . $_POST['recipients'] . "<br />";
-
-echo '<textarea rows="30" cols=100">';
-echo "From: " . $_POST['sender_name'] . "(" . $_POST['sender'] . ")" . "\n";
-echo "Subject: " . $_POST['subject'] . "\n\n";
-
-echo "***" . "\n";
-echo "Date: " . $_POST['date'] . "\n";
-echo "Start Time: " . $_POST['start_time'] . "\n";
-echo "End Time: " . $_POST['end_time'] . "\n";
-echo "***" . "\n\n";
-
-echo utf8_decode($_POST['message']);
-echo '</textarea>';
-
-echo "<br />" . strtotime($_POST['date'] . " " . $_POST['start_time']);
-
+// Set the default timezone for date functions from the config file
 date_default_timezone_set($default_timezone);
 
+// Set start time to GMT, formatted as iCal expects
 $start_time = gmdate("Ymd",strtotime($_POST['date'] . " " . $_POST['start_time']))."T".gmdate("His",strtotime($_POST['date'] . " " . $_POST['start_time']))."Z";
 $end_time = gmdate("Ymd",strtotime($_POST['date'] . " " . $_POST['end_time']))."T".gmdate("His",strtotime($_POST['date'] . " " . $_POST['end_time']))."Z";
+// Format the current timestamp to GMT as iCal expects
 $timestamp = gmdate("Ymd")."T".gmdate("His")."Z";
-echo "<br />" . $start_time;
-echo "<br />" . $end_time;
-echo "<br />" . $timestamp;
-$message = utf8_decode($_POST['message']);
+$uid = $timestamp . "_clearbold";
+
 $sender = $_POST['sender'];
 $sender_name = $_POST['sender_name'];
 $subject = $_POST['subject'];
 
+// This gets some broken/hidden characters out of the pasted in message
+// Example message was pasted from GoToMeeting app
+$message = utf8_decode($_POST['message']);
+$message_email = '';
+// When $message goes into plaintext email, R symbols break, this strips them and one other out
+$forbidden = array(174,194);
+for($i=0;$i<strlen($message);$i++){
+    if(in_array(ord($message[$i]),$forbidden)) continue;
+    else $message_email.= $message[$i];
+}
+// R symbols work in the iCal attachment (tested in Apple's iCal), but \r\n breaks the Description 'field'
+// \n chars on their own work in iCal... Haven't tested Outlook
+$message_ics = str_replace("\r\n", '\n', $message);
+
+// Build up the ATTENDEE recipients list in the iCal attachment, and build up the clean array for the email
 $recipients = "";
 $arr_recipients = explode(",", $_POST['recipients']);
 foreach ($arr_recipients as $recipient) {
@@ -41,20 +40,8 @@ foreach ($arr_recipients as $recipient) {
 }
 $email_recipients[] = $sender;
 $recipients = substr($recipients, 0, -1);
-$uid = $timestamp . "_clearbold";
 
-echo "<br /><br />" . strpos($message,"\r\n") . "<br />";
-
-$message_email = '';
-$forbidden = array(174,194);
-for($i=0;$i<strlen($message);$i++){
-    if(in_array(ord($message[$i]),$forbidden)) continue;
-    else $message_email.= $message[$i];
-    //echo ord($string[$i]).",";
-}
-
-$message_ics = str_replace("\r\n", '\n', $message);
-
+// Here's the iCal attachment
 $ics = <<<ICS
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -81,12 +68,12 @@ END:VEVENT
 END:VCALENDAR
 ICS;
 
+// Write it to our tmp directory
 $file = fopen("tmp/invite.ics","w");
 fwrite($file, $ics);
 fclose($file);
 
-echo '<br /><textarea rows="30" cols="100">' . $ics . '</textarea>';
-
+// Here's the email
 // Create the message
 $message = Swift_Message::newInstance()
 
@@ -116,4 +103,45 @@ $transport = Swift_SmtpTransport::newInstance($smtp_server, $smtp_port)
 
 $mailer = Swift_Mailer::newInstance($transport);
 
-$result = $mailer->send($message);
+if (!$debug) {
+    $result = $mailer->send($message);
+    header('Location: /');
+} else {
+?><!--[if i]><![endif]--><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <!--[if gte IE 9]><!-->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="../ui/css/styles.css" />
+    <!-- <!--[endif]-->
+
+    <!-- Windows 8 / RT -->
+    <meta http-equiv="cleartype" content="on" accept-charset="utf-8" />
+
+    <link type="text/plain" rel="author" href="Mark J. Reeves / Clearbold" />
+    <title>Inviter</title>
+</head>
+<body>
+    <div class="wrapper">
+        <textarea rows="40" readonly>
+Sender: <?= $sender ?>
+
+Sender Name: <?= $sender_name ?>
+
+Subject: <?= $subject ?>
+
+Recipients: <? $i=1; foreach ($email_recipients as $recipient) { ?><?= $recipient ?><? if ($i<count($email_recipients)) echo ','; $i++; ?><? } ?>
+
+
+***
+
+<?= $message_email ?></textarea><br /><br />
+        <textarea rows="40" readonly><?= $ics ?></textarea>
+    </div>
+</body>
+</html>
+<?php
+}
+

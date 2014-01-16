@@ -29,11 +29,32 @@ img {
 html:hover [class^="icon-"] {
   -ms-zoom: 1; }
 
+body {
+  background: #3c4047;
+  font-family: Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.wrapper {
+  background: #f2f2f2;
+  margin: 0 auto;
+  padding: 200px 20px 200px;
+  width: 640px; }
+
 p {
   margin-bottom: 1em; }
 
 label {
-  display: block; }
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.5em;
+  text-indent: 14px; }
 
-textarea {
-  width: 480px; }
+input, textarea {
+  font-size: 16px;
+  padding: 10px; }
+
+input[type=text], input[type=email], textarea {
+  width: 100%; }
+
+input[type=submit] {
+  float: right; }

@@ -1,4 +1,5 @@
 <?php
+$debug = False; // Set to True to review output; False redirects back to invite form
 
 $default_timezone = 'America/New_York'; // http://us2.php.net/manual/en/timezones.america.php
 

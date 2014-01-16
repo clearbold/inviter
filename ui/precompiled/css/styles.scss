@@ -10,7 +10,15 @@
 }
 
 body {
+    background: $body-bg;
+    font-family: $font-family;
+}
 
+.wrapper {
+    background: $form-bg;
+    margin: 0 auto;
+    padding: 200px 20px 200px;
+    width: 640px;
 }
 
 p {
@@ -18,7 +26,19 @@ p {
 }
 label {
     display: block;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.5em;
+    text-indent: 14px;
 }
-textarea {
-    width: 480px;
+
+input, textarea {
+    font-size: 16px;
+    padding: 10px;
+}
+input[type=text], input[type=email], textarea {
+    width: 100%;
+}
+input[type=submit] {
+    float: right;
 }
